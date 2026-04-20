@@ -2,7 +2,7 @@ include .env
 export
 
 export PROJECT_ROOT=$(shell pwd)
-
+  
 env-up:
 	docker compose up -d mind-tick-postgres
 
@@ -17,4 +17,15 @@ env-cleanup:
 		echo "Файлы окружения очищены"; \
 	else \
 		echo "Очистка окружения отменена"; \
-	fi  
+	fi;
+
+migrate-create:
+	@if [ -z "$(seq)" ]; then \
+		echo "отсутствует необходимый параметр seq. Пример migrate-create seq=init";\
+		exit 1; \
+	fi; \
+	docker compose run --rm min-tick-postgres-migrate \
+		create \
+		-ext sql \
+		-dir /migrations \
+		-seq  "$(seq)"
