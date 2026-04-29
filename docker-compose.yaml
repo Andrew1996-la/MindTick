@@ -1,7 +1,7 @@
 services:
   mind-tick-postgres:
     image: postgres:18.1-bookworm
-    container_name: min-tick-env-postgres
+    container_name: mind-tick-env-postgres
     environment:  
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -10,7 +10,7 @@ services:
       - ${PROJECT_ROOT}/out/pgdata:/var/lib/postgresql
     restart: always
 
-  min-tick-postgres-migrate:
+  mind-tick-postgres-migrate:
     image: migrate/migrate:v4.19.1
     volumes:
       - ${PROJECT_ROOT}/migrations:/migrations

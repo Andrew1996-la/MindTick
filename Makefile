@@ -4,7 +4,7 @@ export
 export PROJECT_ROOT=$(shell pwd)
   
 env-up:
-	@ docker compose up -d mind-tick-postgres
+	@docker compose up -d mind-tick-postgres
 
 env-down:
 	@docker compose down mind-tick-postgres
@@ -24,7 +24,7 @@ migrate-create:
 		echo "отсутствует необходимый параметр seq. Пример migrate-create seq=init";\
 		exit 1; \
 	fi; \
-	docker compose run --rm min-tick-postgres-migrate \
+	docker compose run --rm mind-tick-postgres-migrate \
 		create \
 		-ext sql \
 		-dir /migrations \
@@ -41,7 +41,7 @@ migrate-action:
 		echo "отсутствует необходимый параметр action. Пример migrate-action action=up ";\
 		exit 1; \
 	fi; \
-	docker compose run --rm min-tick-postgres-migrate \	
+	docker compose run --rm mind-tick-postgres-migrate \
 			-path /migrations \
 			-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@mind-tick-postgres:5432/${POSTGRES_DB}?sslmode=disable \
 			"$(action)"
