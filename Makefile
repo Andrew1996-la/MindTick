@@ -9,6 +9,12 @@ env-up:
 env-down:
 	@docker compose down mind-tick-postgres
 
+env-port-forward:
+	@docker compose up -d port-forwarder
+
+env-port-close:
+	@docker compose down port-forwarder
+
 env-cleanup:
 	@read -p "Очистить все voluem файлы окружения? Опастность утери данных![y/N]" ans; \
 	if [ "$$ans" = "y" ]; then \
