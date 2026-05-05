@@ -2,7 +2,7 @@ include .env
 export
 
 export PROJECT_ROOT=$(shell pwd)
-  
+    
 env-up:
 	@docker compose up -d mind-tick-postgres
 
@@ -54,3 +54,9 @@ migrate-action:
 
 mindTick-run:
 	@go run cmd/mindTick/main.go
+
+all-up: env-up env-port-forward
+	@echo "Окружение полностью запущено"
+
+all-down: env-down env-port-close
+	@echo "Окружение остановлено"
