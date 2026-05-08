@@ -1,4 +1,4 @@
-package logger
+package core_logger
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func NewLogger(config Config) (*Logger, error) {
 		return nil, fmt.Errorf("zap unmarshal text: %w", err)
 	}
 
-	if err:=os.MkdirAll(config.Folder, 0755); err != nil {
+	if err := os.MkdirAll(config.Folder, 0755); err != nil {
 		return nil, fmt.Errorf("mkdir log folder: %w", err)
 	}
 
@@ -32,7 +32,7 @@ func NewLogger(config Config) (*Logger, error) {
 		fmt.Sprintf("%s.log", timestamp),
 	)
 
-	file, err := os.OpenFile(logFilePath, os.O_CREATE | os.O_WRONLY, 0644 )
+	file, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, fmt.Errorf("create file: %w", err)
 	}
@@ -51,12 +51,19 @@ func NewLogger(config Config) (*Logger, error) {
 
 	return &Logger{
 		Logger: zapLogger,
-		file: file,
+		file:   file,
 	}, nil
 }
 
+func (l Logger) With(fields ...zap.Field) *Logger {
+	return &Logger{
+		Logger: l.Logger.With(fields...),
+		file:   l.file,
+	}
+}
+
 func (l Logger) Close() {
-    if	err := l.file.Close(); err != nil {
+	if err := l.file.Close(); err != nil {
 		fmt.Println("failed to close application logger:", err)
 	}
 }
