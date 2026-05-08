@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	core_logger "github.com/Andrew1996-la/MindTick/internal/core/logger"
+	core_http_response "github.com/Andrew1996-la/MindTick/internal/core/transport/http/response"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
@@ -50,3 +51,25 @@ func Logger(log *core_logger.Logger) Middleware {
 		})
 	}
 }
+
+func Panic() Middleware {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			logger := core_logger.FromLogger(ctx)
+
+			httpHandlerResponse := core_http_response.NewHTTPHandlerResponse(logger, w)
+			
+			defer func() {
+				if r := recover(); r != nil {
+					httpHandlerResponse.PanicResponse(
+						r,
+						"during handle HTTP Request got expected panic",
+					)
+				}
+			}()
+
+			next.ServeHTTP(w, r)  
+		})
+	}
+} 
