@@ -27,6 +27,17 @@ func NewHttpServer(
 	}
 }
 
+func (h *HttpServer) RegisterAPIRoutes(routes ...APIVersionRouter) {
+	for _, router := range routes {
+		prefix := "/api/" + string(router.APIVersion)
+
+		h.mux.Handle(
+			prefix+"/",
+			http.StripPrefix(prefix, router),
+		)
+	}
+}
+
 func (h *HttpServer) Run(ctx context.Context) error {
 	server := &http.Server{
 		Addr:    h.config.Addr,
@@ -63,7 +74,7 @@ func (h *HttpServer) Run(ctx context.Context) error {
 
 		if err := server.Shutdown(shutdownCtx); err != nil {
 			_ = server.Close()
- 
+
 			return fmt.Errorf("shutdown HTTP server: %w", err)
 		}
 
